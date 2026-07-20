@@ -172,3 +172,9 @@ GitHub Actions em cada push/PR: `lint` → `format:check` → `typecheck` → `t
 - **API:** https://github.com/MariaHilmar/juris-sync
 - **Dashboard (este repo):** https://github.com/MariaHilmar/juris-sync-web
 - **Portfólio (vitrine Astro):** repositório `maria-portfolio` no workspace local
+
+---
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
