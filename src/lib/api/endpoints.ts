@@ -6,8 +6,6 @@ import type {
   ProcessoListResponse,
   ProcessoSyncRequest,
   ProcessoSyncResponse,
-  StatsAssuntoItem,
-  StatsTribunalItem,
 } from "./types";
 
 function buildQueryString(params: Record<string, string | number | undefined>) {
@@ -47,12 +45,4 @@ export function syncProcesso(body: ProcessoSyncRequest) {
     method: "POST",
     body: JSON.stringify(body),
   });
-}
-
-export function getStatsPorTribunal() {
-  return apiFetch<StatsTribunalItem[]>("/api/v1/processos/stats/por-tribunal");
-}
-
-export function getStatsPorAssunto() {
-  return apiFetch<StatsAssuntoItem[]>("/api/v1/processos/stats/por-assunto");
 }

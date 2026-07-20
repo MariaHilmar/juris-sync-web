@@ -73,7 +73,7 @@ flowchart LR
 | `GET` | `/api/v1/processos/{id}` | Detalhe + movimentações |
 | `POST` | `/api/v1/processos/sync` | Sincronizar por CNJ |
 
-O dashboard carrega **todos os processos** (paginado, 100 por página) na Visão Geral via `useAllProcessos` e agrega jurimetria no cliente (`lib/jurimetria.ts`). Os endpoints `/stats/por-tribunal` e `/stats/por-assunto` existem na API mas **não são usados** na home após a introdução do cross-filter.
+O dashboard carrega **todos os processos** (paginado, 100 por página) na Visão Geral via `useAllProcessos` e agrega jurimetria no cliente (`lib/jurimetria.ts`). Os endpoints `/stats/por-tribunal` e `/stats/por-assunto` existem na API, mas o frontend não os consome - a agregação é feita localmente para suportar cross-filter.
 
 ---
 

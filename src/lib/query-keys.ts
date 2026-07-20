@@ -6,6 +6,4 @@ export const queryKeys = {
     ["processos", filters] as const,
   allProcessos: ["processos", "all"] as const,
   processo: (id: string) => ["processo", id] as const,
-  statsTribunal: ["stats", "tribunal"] as const,
-  statsAssunto: ["stats", "assunto"] as const,
 };

@@ -12,8 +12,6 @@ export function useSyncProcesso() {
     mutationFn: (body: ProcessoSyncRequest) => syncProcesso(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["processos"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.statsTribunal });
-      queryClient.invalidateQueries({ queryKey: queryKeys.statsAssunto });
       queryClient.invalidateQueries({ queryKey: queryKeys.health });
     },
   });

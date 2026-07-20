@@ -49,9 +49,7 @@ src/
 │   ├── useHealth.ts
 │   ├── useProcessos.ts
 │   ├── useProcesso.ts
-│   ├── useSyncProcesso.ts
-│   ├── useStatsTribunal.ts      # Legado; não usado na home
-│   └── useStatsAssunto.ts       # Legado; não usado na home
+│   └── useSyncProcesso.ts
 └── lib/
     ├── api/                     # client, endpoints, types
     ├── jurimetria.ts            # Cross-filter + agregações
@@ -105,7 +103,6 @@ Lógica pura de agregação e cross-filter no cliente:
 Após sync bem-sucedido, `useSyncProcesso` invalida:
 
 - `["processos"]` (inclui `allProcessos`)
-- `["stats", "tribunal"]` e `["stats", "assunto"]` (compatibilidade)
 - `["health"]`
 
 `QueryClient`: `staleTime` 30s, `retry` 1.
