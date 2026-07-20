@@ -30,7 +30,10 @@ export function DashboardView() {
   const [filters, setFilters] = useState<DashboardFilters>(EMPTY_FILTERS);
   const chartsRef = useRef<HTMLDivElement>(null);
 
-  const processos = processosQuery.data ?? [];
+  const processos = useMemo(
+    () => processosQuery.data ?? [],
+    [processosQuery.data],
+  );
 
   const clearFilters = useCallback(() => {
     setFilters(EMPTY_FILTERS);
@@ -204,11 +207,7 @@ export function DashboardView() {
         </section>
       )}
 
-      <div
-        ref={chartsRef}
-        className="space-y-6"
-        data-dashboard-charts
-      >
+      <div ref={chartsRef} className="space-y-6" data-dashboard-charts>
         <section className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-[var(--muted)]">Filtros ativos:</span>
           {!hasActiveFilter && (

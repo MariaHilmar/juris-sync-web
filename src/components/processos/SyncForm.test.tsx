@@ -35,9 +35,7 @@ describe("SyncForm", () => {
     await user.type(screen.getByLabelText("Número CNJ"), "123-invalido");
     await user.click(screen.getByRole("button", { name: "Sincronizar" }));
 
-    expect(
-      await screen.findByText(/Formato inválido/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Formato inválido/i)).toBeInTheDocument();
     expect(mutateAsync).not.toHaveBeenCalled();
   });
 

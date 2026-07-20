@@ -78,7 +78,8 @@ export function AssuntoChart({
           <Tooltip
             formatter={(value) => [value, "Processos"]}
             labelFormatter={(_, payload) => {
-              const item = payload?.[0]?.payload as StatsAssuntoItem | undefined;
+              const item = payload?.[0]?.payload as
+                StatsAssuntoItem | undefined;
               return item ? `Assunto: ${item.assunto}` : "Assunto";
             }}
           />
@@ -101,11 +102,7 @@ export function AssuntoChart({
                 <Cell
                   key={item.assunto}
                   fill={
-                    isSelected
-                      ? FILL_SELECTED
-                      : isDimmed
-                        ? FILL_DIMMED
-                        : FILL
+                    isSelected ? FILL_SELECTED : isDimmed ? FILL_DIMMED : FILL
                   }
                   stroke={isSelected ? "#0f2744" : undefined}
                   strokeWidth={isSelected ? 1 : 0}

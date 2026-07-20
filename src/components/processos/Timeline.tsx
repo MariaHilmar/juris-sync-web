@@ -7,8 +7,7 @@ type TimelineProps = {
 
 export function Timeline({ movimentacoes }: TimelineProps) {
   const ordered = [...movimentacoes].sort(
-    (a, b) =>
-      new Date(b.data_hora).getTime() - new Date(a.data_hora).getTime(),
+    (a, b) => new Date(b.data_hora).getTime() - new Date(a.data_hora).getTime(),
   );
 
   if (ordered.length === 0) {
