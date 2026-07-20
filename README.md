@@ -1,36 +1,173 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JurisSync Web
 
-## Getting Started
+Dashboard web em **Next.js** para o [JurisSync API](https://github.com/MariaHilmar/juris-sync): jurimetria interativa (mapa por UF, filtros cruzados), listagem de processos, detalhe com timeline e sincronização por número CNJ.
 
-First, run the development server:
+## Escopo: portfólio (não é produção)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Este projeto e a API irmã existem **exclusivamente para apresentação no portfólio técnico**. Não são serviços SaaS em produção: sem autenticação, sem SLA e sem hardening de ambiente público.
+
+- **Hub do portfólio:** [maria-portfolio](https://github.com/MariaHilmar/maria-portfolio) · [site live](https://mariahilmar-portfolio.vercel.app)
+- **Como avaliar:** clone API + dashboard, rode local. Mock sem chave CNJ ou DataJud real com chave própria.
+- **Guia:** **[docs/guia-do-testador.md](docs/guia-do-testador.md)**
+
+A API FastAPI permanece em repositório separado; este projeto consome apenas HTTP/REST.
+
+---
+
+## Destaques da interface
+
+- **Mapa do Brasil** (choropleth) com totais por UF, zoom/pan e ranking lateral
+- **Filtros cruzados** - clique em UF ou assunto e os demais gráficos atualizam; clique fora para limpar
+- **Header fixo** com navegação Visão Geral | Processos
+- **Instruções na tela** explicando como usar os filtros
+- Dados **sempre** vindos da API (sem gráficos estáticos no frontend)
+
+---
+
+## Fontes de dados (mock vs real)
+
+O dashboard **sempre** exibe o que está no banco local da API.
+
+| Modo | Configuração | O que acontece |
+|------|----------------|----------------|
+| **Mock (demo)** | `DATAJUD_API_KEY` vazio no `.env` da API | Dados plausíveis gerados a partir do CNJ; badge **Mock (demo)** |
+| **Real (DataJud)** | `DATAJUD_API_KEY` preenchida | Consulta a API Pública do CNJ; badge **Configurada** |
+
+Para popular jurimetria no modo mock:
+
+```powershell
+cd juris-sync
+python scripts/seed_demo.py --fresh
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Sincroniza **116 processos** em todos os tribunais estaduais, com totais diferentes por UF (SP 15, RJ 12, ... até 1 em estados menores). Use `--fresh` para limpar a base antes de popular.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+| Camada | Tecnologia |
+|--------|------------|
+| Framework | Next.js 15 (App Router) |
+| UI | React 19 + TypeScript |
+| Estilo | Tailwind CSS |
+| Dados | TanStack Query |
+| Formulários | React Hook Form + Zod |
+| Gráficos | Recharts + d3-geo (mapa) |
+| Ícones | lucide-react |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Pré-requisitos
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Node.js** 20+
+- **npm**
+- API [juris-sync](https://github.com/MariaHilmar/juris-sync) rodando em `http://localhost:8000`
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Execução local (clone do GitHub)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```powershell
+git clone https://github.com/MariaHilmar/juris-sync.git
+git clone https://github.com/MariaHilmar/juris-sync-web.git
+```
+
+### 1. Subir a API (terminal 1)
+
+```powershell
+cd juris-sync
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+copy .env.example .env
+python -m alembic upgrade head
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+No **CMD**, use `activate.bat` em vez de `Activate.ps1`. Se o venv não ativar:
+
+```cmd
+.venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Confirme: http://localhost:8000/health
+
+### 2. Subir o dashboard (terminal 2)
+
+```powershell
+cd juris-sync-web
+copy .env.example .env.local
+npm install
+npm run dev
+```
+
+Abra http://localhost:3000
+
+### 3. Demo rápida
+
+```powershell
+cd juris-sync
+python scripts/seed_demo.py --fresh
+```
+
+Recarregue http://localhost:3000 e teste os filtros cruzados na Visão Geral.
+
+**Modo real:** adicione `DATAJUD_API_KEY` no `juris-sync/.env`, reinicie a API e sincronize CNJs reais em **Processos**.
+
+---
+
+## Rotas da interface
+
+| Rota | Descrição |
+|------|-----------|
+| `/` | Visão Geral: KPIs, mapa por UF, gráficos, filtros cruzados |
+| `/processos` | Sync por CNJ, filtros, lista paginada |
+| `/processos/[id]` | Detalhe do processo + timeline de movimentações |
+
+---
+
+## Variáveis de ambiente
+
+| Variável | Descrição | Padrão |
+|----------|-----------|--------|
+| `NEXT_PUBLIC_JURISSYNC_API_URL` | URL base da API (sem barra final) | `http://localhost:8000` |
+
+---
+
+## Scripts npm
+
+```bash
+npm run dev        # desenvolvimento
+npm run build      # build de produção
+npm run start      # servidor de produção
+npm run lint       # ESLint
+npm run typecheck  # TypeScript
+npm run test       # Vitest
+```
+
+---
+
+## Documentação técnica e funcional
+
+| Documento | Conteúdo |
+|-----------|----------|
+| **[Guia do testador](docs/guia-do-testador.md)** | Clone, mock vs real, checklist de validação |
+| **[Requisitos](docs/requisitos.md)** | Histórias de usuário, regras de UI, BDD, rastreabilidade |
+| [Arquitetura](docs/arquitetura.md) | Camadas, cross-filter, mapa, hooks |
+| [Requisitos (resumo)](docs/requisitos-frontend.md) | Índice para o doc completo |
+| [ADR 0001 - Cliente separado](docs/adr/0001-nextjs-cliente-separado.md) | Decisão de repositório separado |
+
+---
+
+## CI
+
+GitHub Actions em cada push/PR: `lint` → `typecheck` → `test` → `build`.
+
+---
+
+## Repositórios relacionados
+
+- **API:** https://github.com/MariaHilmar/juris-sync
+- **Dashboard (este repo):** https://github.com/MariaHilmar/juris-sync-web
+- **Portfólio (vitrine Astro):** repositório `maria-portfolio` no workspace local
