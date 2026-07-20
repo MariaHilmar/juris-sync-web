@@ -3,19 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f6f4ef;
+  --foreground: #0f2744;
+  --accent: #1f6b4a;
+  --muted: #5c6b7a;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --header-offset: 7.25rem;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(180deg, #f6f4ef 0%, #eef2f6 100%);
+  min-height: 100vh;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-source-serif), Georgia, serif;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-lg border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm;
+  }
 }
