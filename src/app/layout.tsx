@@ -26,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${dmSans.variable} ${sourceSerif.variable} antialiased`}>
+      <body
+        className={`${dmSans.variable} ${sourceSerif.variable} antialiased`}
+      >
         <QueryProvider>
           <AppHeader />
           <div className="pt-[7.25rem]">{children}</div>

@@ -1,4 +1,8 @@
-import type { Processo, StatsAssuntoItem, StatsTribunalItem } from "@/lib/api/types";
+import type {
+  Processo,
+  StatsAssuntoItem,
+  StatsTribunalItem,
+} from "@/lib/api/types";
 import { TRIBUNAL_TO_UF, type UfStat } from "@/lib/tribunal-uf";
 
 export type DashboardFilters = {

@@ -16,10 +16,7 @@ const syncSchema = z.object({
   numero_cnj: z
     .string()
     .min(1, "Informe o número CNJ.")
-    .regex(
-      CNJ_REGEX,
-      "Formato inválido. Use NNNNNNN-DD.AAAA.J.TR.OOOO",
-    ),
+    .regex(CNJ_REGEX, "Formato inválido. Use NNNNNNN-DD.AAAA.J.TR.OOOO"),
   grau: z.number().int().min(1).max(3),
 });
 
@@ -67,7 +64,11 @@ export function SyncForm() {
           <option value={2}>2º grau</option>
           <option value={3}>3º grau</option>
         </Select>
-        <Button type="submit" disabled={syncMutation.isPending} className="md:mb-0">
+        <Button
+          type="submit"
+          disabled={syncMutation.isPending}
+          className="md:mb-0"
+        >
           {syncMutation.isPending ? "Sincronizando..." : "Sincronizar"}
         </Button>
       </div>

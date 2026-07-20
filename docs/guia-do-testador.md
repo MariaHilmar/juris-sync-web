@@ -16,11 +16,11 @@ Não é necessário deploy na nuvem. Tudo roda na sua máquina com API em `local
 
 ## O que você está testando
 
-| Camada | O que é real | O que pode ser mock |
-|--------|----------------|-------------------|
-| **Dashboard (Next.js)** | UI, chamadas HTTP, mapa, gráficos, filtros cruzados | Nada - sempre consome a API |
-| **API (FastAPI)** | Endpoints, banco, sync, jurimetria | Fonte externa DataJud (se não houver chave) |
-| **Banco local** | SQLite/Postgres com processos sincronizados | Conteúdo vem do mock ou do CNJ real |
+| Camada                  | O que é real                                        | O que pode ser mock                         |
+| ----------------------- | --------------------------------------------------- | ------------------------------------------- |
+| **Dashboard (Next.js)** | UI, chamadas HTTP, mapa, gráficos, filtros cruzados | Nada - sempre consome a API                 |
+| **API (FastAPI)**       | Endpoints, banco, sync, jurimetria                  | Fonte externa DataJud (se não houver chave) |
+| **Banco local**         | SQLite/Postgres com processos sincronizados         | Conteúdo vem do mock ou do CNJ real         |
 
 Os gráficos e o mapa **não usam dados estáticos no frontend**. Refletem processos persistidos na API.
 
@@ -108,11 +108,11 @@ Reinicie a API e sincronize CNJs reais em **Processos** no dashboard ou via Swag
 
 ## Como saber qual modo está ativo
 
-| Onde | Mock | Real |
-|------|------|------|
-| `GET /health` → `services.datajud_api` | `mock_mode` | `configured` |
-| Dashboard → card **Fonte DataJud** | Mock (demo) | Configurada |
-| Dados nos gráficos | Gerados localmente a partir do CNJ | Vindos do DataJud (quando a consulta retorna hits) |
+| Onde                                   | Mock                               | Real                                               |
+| -------------------------------------- | ---------------------------------- | -------------------------------------------------- |
+| `GET /health` → `services.datajud_api` | `mock_mode`                        | `configured`                                       |
+| Dashboard → card **Fonte DataJud**     | Mock (demo)                        | Configurada                                        |
+| Dados nos gráficos                     | Gerados localmente a partir do CNJ | Vindos do DataJud (quando a consulta retorna hits) |
 
 ---
 

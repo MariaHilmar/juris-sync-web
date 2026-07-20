@@ -65,7 +65,9 @@ describe("apiFetch", () => {
       }),
     );
 
-    await expect(apiFetch("/api/v1/processos/sync", { method: "POST" })).rejects.toMatchObject({
+    await expect(
+      apiFetch("/api/v1/processos/sync", { method: "POST" }),
+    ).rejects.toMatchObject({
       status: 422,
       message: "Dados inválidos. Verifique o número CNJ e o grau.",
     });
