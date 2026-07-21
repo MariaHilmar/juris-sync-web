@@ -15,6 +15,7 @@
 7. [Regras de validação (cliente)](#7-regras-de-validação-cliente)
 8. [Requisitos não funcionais](#8-requisitos-não-funcionais)
 9. [Rastreabilidade requisito → código → teste](#9-rastreabilidade-requisito--código--teste)
+10. [Metodologia de desenvolvimento](#10-metodologia-de-desenvolvimento)
 
 ---
 
@@ -307,6 +308,19 @@ Alinhado ao schema Pydantic da API (`juris-sync/app/schemas/process.py`).
 | HU06       | `SyncForm`                                        | `POST /processos/sync` | `cnj.test.ts`, `SyncForm.test.tsx`         |
 | Erros HTTP | `lib/api/client.ts`                               | todos                  | `client.test.ts`                           |
 | RN-F06     | `AppHeader`, `layout.tsx`                         | -                      | manual                                     |
+
+---
+
+## 10. Metodologia de desenvolvimento
+
+Este dashboard utilizou **ferramentas de IA generativa** sob a metodologia de **Especificação Direcionada (SDD)**:
+
+1. **Especificação** - requisitos de interface, regras de jurimetria (RN-F*) e cenários BDD definidos em paralelo ao código (este documento e [guia do testador](guia-do-testador.md)).
+2. **Geração assistida** - componentes React, layout e documentação acelerados com IA generativa.
+3. **Revisão humana** - todo código passou por **code review manual** e revisão automatizada em PRs (Cursor Bugbot, regras em `.cursor/BUGBOT.md`): contrato HTTP com a API, filtros cruzados e validação CNJ validados por lint, typecheck e testes Vitest no CI.
+4. **Rastreabilidade** - a matriz da seção 9 liga requisito → componente → teste.
+
+A IA acelerou a produção; a **coerência com a API** e a experiência de demo são responsabilidade da revisão humana e do guia do testador.
 
 ---
 
