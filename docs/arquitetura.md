@@ -81,22 +81,22 @@ Componentes **não** chamam `fetch` diretamente.
 
 Lógica pura de agregação e cross-filter no cliente:
 
-| Função | Uso |
-|--------|-----|
-| `filterProcessos` | KPIs e gráfico de tribunal (UF + assunto) |
-| `processosForUfChart` | Mapa (ignora filtro UF, aplica assunto) |
-| `processosForAssuntoChart` | Assuntos (ignora filtro assunto, aplica UF) |
-| `aggregateByUf` / `aggregateByTribunal` / `aggregateByAssunto` | Totais para gráficos |
+| Função                                                         | Uso                                         |
+| -------------------------------------------------------------- | ------------------------------------------- |
+| `filterProcessos`                                              | KPIs e gráfico de tribunal (UF + assunto)   |
+| `processosForUfChart`                                          | Mapa (ignora filtro UF, aplica assunto)     |
+| `processosForAssuntoChart`                                     | Assuntos (ignora filtro assunto, aplica UF) |
+| `aggregateByUf` / `aggregateByTribunal` / `aggregateByAssunto` | Totais para gráficos                        |
 
 ### Hooks
 
-| Hook | Query/Mutation | Observação |
-|------|----------------|------------|
-| `useHealth` | `GET /health` | Status e modo DataJud |
-| `useAllProcessos` | `GET /api/v1/processos/` (paginado) | Dashboard jurimetria |
-| `useProcessos` | `GET /api/v1/processos/` | Lista com filtros |
-| `useProcesso` | `GET /api/v1/processos/{id}` | Detalhe |
-| `useSyncProcesso` | `POST /api/v1/processos/sync` | Invalida cache |
+| Hook              | Query/Mutation                      | Observação            |
+| ----------------- | ----------------------------------- | --------------------- |
+| `useHealth`       | `GET /health`                       | Status e modo DataJud |
+| `useAllProcessos` | `GET /api/v1/processos/` (paginado) | Dashboard jurimetria  |
+| `useProcessos`    | `GET /api/v1/processos/`            | Lista com filtros     |
+| `useProcesso`     | `GET /api/v1/processos/{id}`        | Detalhe               |
+| `useSyncProcesso` | `POST /api/v1/processos/sync`       | Invalida cache        |
 
 ### Cache e invalidação
 
@@ -158,13 +158,13 @@ sequenceDiagram
 
 ## App Router: Server vs Client
 
-| Área | Tipo | Motivo |
-|------|------|--------|
-| `layout.tsx` | Server | Metadata, fontes |
-| `AppHeader` | Client | `usePathname` para item ativo |
-| `QueryProvider` | Client | React Query |
-| `DashboardView`, `ProcessosView` | Client | Hooks, gráficos, filtros |
-| `processos/[id]/page.tsx` | Server shell | Passa `id` ao client |
+| Área                             | Tipo         | Motivo                        |
+| -------------------------------- | ------------ | ----------------------------- |
+| `layout.tsx`                     | Server       | Metadata, fontes              |
+| `AppHeader`                      | Client       | `usePathname` para item ativo |
+| `QueryProvider`                  | Client       | React Query                   |
+| `DashboardView`, `ProcessosView` | Client       | Hooks, gráficos, filtros      |
+| `processos/[id]/page.tsx`        | Server shell | Passa `id` ao client          |
 
 Gráficos (Recharts, d3-geo) e formulários são sempre `'use client'`.
 
@@ -195,10 +195,10 @@ Gráficos (Recharts, d3-geo) e formulários são sempre `'use client'`.
 
 O frontend **não embute dados fictícios nos gráficos**. Jurimetria reflete o banco local populado por sync ou `seed_demo.py`.
 
-| Modo | Identificação | Demo |
-|------|---------------|------|
+| Modo | Identificação                                 | Demo                                  |
+| ---- | --------------------------------------------- | ------------------------------------- |
 | Mock | `/health` → `mock_mode`; card **Mock (demo)** | `python scripts/seed_demo.py --fresh` |
-| Real | `/health` → `configured` | `DATAJUD_API_KEY` + CNJs reais |
+| Real | `/health` → `configured`                      | `DATAJUD_API_KEY` + CNJs reais        |
 
 Guia: [guia-do-testador.md](guia-do-testador.md)
 

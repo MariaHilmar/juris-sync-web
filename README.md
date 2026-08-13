@@ -28,10 +28,10 @@ A API FastAPI permanece em repositório separado; este projeto consome apenas HT
 
 O dashboard **sempre** exibe o que está no banco local da API.
 
-| Modo | Configuração | O que acontece |
-|------|----------------|----------------|
-| **Mock (demo)** | `DATAJUD_API_KEY` vazio no `.env` da API | Dados plausíveis gerados a partir do CNJ; badge **Mock (demo)** |
-| **Real (DataJud)** | `DATAJUD_API_KEY` preenchida | Consulta a API Pública do CNJ; badge **Configurada** |
+| Modo               | Configuração                             | O que acontece                                                  |
+| ------------------ | ---------------------------------------- | --------------------------------------------------------------- |
+| **Mock (demo)**    | `DATAJUD_API_KEY` vazio no `.env` da API | Dados plausíveis gerados a partir do CNJ; badge **Mock (demo)** |
+| **Real (DataJud)** | `DATAJUD_API_KEY` preenchida             | Consulta a API Pública do CNJ; badge **Configurada**            |
 
 Para popular jurimetria no modo mock:
 
@@ -46,15 +46,15 @@ Sincroniza **116 processos** em todos os tribunais estaduais, com totais diferen
 
 ## Stack
 
-| Camada | Tecnologia |
-|--------|------------|
-| Framework | Next.js 15 (App Router) |
-| UI | React 19 + TypeScript |
-| Estilo | Tailwind CSS |
-| Dados | TanStack Query |
-| Formulários | React Hook Form + Zod |
-| Gráficos | Recharts + d3-geo (mapa) |
-| Ícones | lucide-react |
+| Camada      | Tecnologia               |
+| ----------- | ------------------------ |
+| Framework   | Next.js 15 (App Router)  |
+| UI          | React 19 + TypeScript    |
+| Estilo      | Tailwind CSS             |
+| Dados       | TanStack Query           |
+| Formulários | React Hook Form + Zod    |
+| Gráficos    | Recharts + d3-geo (mapa) |
+| Ícones      | lucide-react             |
 
 ---
 
@@ -119,18 +119,18 @@ Recarregue http://localhost:3000 e teste os filtros cruzados na Visão Geral.
 
 ## Rotas da interface
 
-| Rota | Descrição |
-|------|-----------|
-| `/` | Visão Geral: KPIs, mapa por UF, gráficos, filtros cruzados |
-| `/processos` | Sync por CNJ, filtros, lista paginada |
-| `/processos/[id]` | Detalhe do processo + timeline de movimentações |
+| Rota              | Descrição                                                  |
+| ----------------- | ---------------------------------------------------------- |
+| `/`               | Visão Geral: KPIs, mapa por UF, gráficos, filtros cruzados |
+| `/processos`      | Sync por CNJ, filtros, lista paginada                      |
+| `/processos/[id]` | Detalhe do processo + timeline de movimentações            |
 
 ---
 
 ## Variáveis de ambiente
 
-| Variável | Descrição | Padrão |
-|----------|-----------|--------|
+| Variável                        | Descrição                         | Padrão                  |
+| ------------------------------- | --------------------------------- | ----------------------- |
 | `NEXT_PUBLIC_JURISSYNC_API_URL` | URL base da API (sem barra final) | `http://localhost:8000` |
 
 ---
@@ -138,31 +138,44 @@ Recarregue http://localhost:3000 e teste os filtros cruzados na Visão Geral.
 ## Scripts npm
 
 ```bash
-npm run dev        # desenvolvimento
-npm run build      # build de produção
-npm run start      # servidor de produção
-npm run lint       # ESLint
-npm run typecheck  # TypeScript
-npm run test       # Vitest
+npm run dev           # desenvolvimento
+npm run build         # build de produção
+npm run start         # servidor de produção
+npm run lint          # ESLint
+npm run format:check  # verifica formatação (Prettier)
+npm run typecheck     # TypeScript
+npm run test          # Vitest
 ```
 
 ---
 
 ## Documentação técnica e funcional
 
-| Documento | Conteúdo |
-|-----------|----------|
-| **[Guia do testador](docs/guia-do-testador.md)** | Clone, mock vs real, checklist de validação |
-| **[Requisitos](docs/requisitos.md)** | Histórias de usuário, regras de UI, BDD, rastreabilidade |
-| [Arquitetura](docs/arquitetura.md) | Camadas, cross-filter, mapa, hooks |
-| [Requisitos (resumo)](docs/requisitos-frontend.md) | Índice para o doc completo |
-| [ADR 0001 - Cliente separado](docs/adr/0001-nextjs-cliente-separado.md) | Decisão de repositório separado |
+| Documento                                                               | Conteúdo                                                 |
+| ----------------------------------------------------------------------- | -------------------------------------------------------- |
+| **[Guia do testador](docs/guia-do-testador.md)**                        | Clone, mock vs real, checklist de validação              |
+| **[Requisitos](docs/requisitos.md)**                                    | Histórias de usuário, regras de UI, BDD, rastreabilidade |
+| [Arquitetura](docs/arquitetura.md)                                      | Camadas, cross-filter, mapa, hooks                       |
+| [Requisitos (resumo)](docs/requisitos-frontend.md)                      | Índice para o doc completo                               |
+| [ADR 0001 - Cliente separado](docs/adr/0001-nextjs-cliente-separado.md) | Decisão de repositório separado                          |
 
 ---
 
 ## CI
 
-GitHub Actions em cada push/PR: `lint` → `typecheck` → `test` → `build`.
+GitHub Actions em cada push/PR: `lint` → `format:check` → `typecheck` → `test` → `build`.
+
+### Code review
+
+- **Revisão humana** em pull requests (template em [`.github/pull_request_template.md`](.github/pull_request_template.md))
+- **Cursor Bugbot** em PRs com regras de UI/API em [`.cursor/BUGBOT.md`](.cursor/BUGBOT.md) (filtros cruzados, contrato HTTP, validação CNJ)
+- Ative o Bugbot no [dashboard do Cursor](https://cursor.com/dashboard) para o repositório `MariaHilmar/juris-sync-web`
+
+---
+
+## Metodologia
+
+Este dashboard foi desenvolvido com **ferramentas de IA generativa** sob a metodologia de **Especificação Direcionada (SDD)**: requisitos de interface, regras de jurimetria e cenários BDD estão em `docs/requisitos.md`, escritos em paralelo ao código. O código passou por **revisão humana** (code review, lint, typecheck e testes Vitest no CI). A IA acelerou componentes e layout; a coerência com o contrato da API e os filtros cruzados é validada por testes e pelo [guia do testador](docs/guia-do-testador.md).
 
 ---
 
@@ -171,3 +184,9 @@ GitHub Actions em cada push/PR: `lint` → `typecheck` → `test` → `build`.
 - **API:** https://github.com/MariaHilmar/juris-sync
 - **Dashboard (este repo):** https://github.com/MariaHilmar/juris-sync-web
 - **Portfólio (vitrine Astro):** repositório `maria-portfolio` no workspace local
+
+---
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.

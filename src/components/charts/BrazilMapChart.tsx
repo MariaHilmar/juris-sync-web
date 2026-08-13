@@ -109,6 +109,7 @@ export function BrazilMapChart({
   const [hovered, setHovered] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -205,6 +206,7 @@ export function BrazilMapChart({
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
     didDragRef.current = false;
+    setIsDragging(true);
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -239,6 +241,7 @@ export function BrazilMapChart({
       return;
     }
     dragRef.current = null;
+    setIsDragging(false);
   };
 
   const handleUfClick = (uf: string) => {
@@ -319,7 +322,9 @@ export function BrazilMapChart({
           <div
             ref={mapAreaRef}
             className={`relative h-full min-h-[420px] overflow-hidden ${
-              zoom > MIN_ZOOM ? "cursor-grab active:cursor-grabbing" : "cursor-default"
+              zoom > MIN_ZOOM
+                ? "cursor-grab active:cursor-grabbing"
+                : "cursor-default"
             }`}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
@@ -335,7 +340,7 @@ export function BrazilMapChart({
               style={{
                 transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                 transformOrigin: "center center",
-                transition: dragRef.current ? "none" : "transform 120ms ease-out",
+                transition: isDragging ? "none" : "transform 120ms ease-out",
                 background: MAP_BG,
               }}
               onClick={handleBackgroundClick}
@@ -369,9 +374,7 @@ export function BrazilMapChart({
                     <path
                       d={d}
                       fill={colorForValue(value, maxValue)}
-                      stroke={
-                        isSelected || isHovered ? STROKE_ACTIVE : STROKE
-                      }
+                      stroke={isSelected || isHovered ? STROKE_ACTIVE : STROKE}
                       strokeWidth={isSelected ? 2.2 : isHovered ? 1.6 : 0.7}
                     >
                       <title>
@@ -388,7 +391,8 @@ export function BrazilMapChart({
                         className="pointer-events-none"
                         style={{
                           fill: labelColor,
-                          fontSize: uf === "DF" || uf === "SE" || uf === "AL" ? 9 : 11,
+                          fontSize:
+                            uf === "DF" || uf === "SE" || uf === "AL" ? 9 : 11,
                           fontWeight: 600,
                         }}
                       >
@@ -400,7 +404,10 @@ export function BrazilMapChart({
                           dy="1.25em"
                           style={{
                             fill: value > 0 ? labelColor : LABEL_MUTED,
-                            fontSize: uf === "DF" || uf === "SE" || uf === "AL" ? 8 : 10,
+                            fontSize:
+                              uf === "DF" || uf === "SE" || uf === "AL"
+                                ? 8
+                                : 10,
                             fontWeight: 500,
                           }}
                         >
@@ -417,7 +424,9 @@ export function BrazilMapChart({
           <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
             <span className="rounded-full border border-[var(--border)] bg-white/90 px-3 py-1 text-[11px] text-[var(--muted)] shadow-sm backdrop-blur-sm">
               {zoomPercent}%
-              {zoom > MIN_ZOOM ? " - arraste para mover" : " - use + / − ou a roda do mouse"}
+              {zoom > MIN_ZOOM
+                ? " - arraste para mover"
+                : " - use + / − ou a roda do mouse"}
             </span>
           </div>
         </div>

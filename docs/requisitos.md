@@ -15,6 +15,7 @@
 7. [Regras de validação (cliente)](#7-regras-de-validação-cliente)
 8. [Requisitos não funcionais](#8-requisitos-não-funcionais)
 9. [Rastreabilidade requisito → código → teste](#9-rastreabilidade-requisito--código--teste)
+10. [Metodologia de desenvolvimento](#10-metodologia-de-desenvolvimento)
 
 ---
 
@@ -32,25 +33,25 @@ O **JurisSync Web** é o dashboard em Next.js que consome a [API JurisSync](http
 
 ## 2. Glossário
 
-| Termo | Definição |
-|-------|-----------|
-| **Dashboard / Visão Geral** | Rota `/` com KPIs, mapa do Brasil, gráficos e filtros cruzados |
-| **Cross-filter** | Seleção em um gráfico (UF ou assunto) que recalcula os demais componentes |
-| **UF** | Unidade federativa; no mapa, agregação de tribunais estaduais (TJ*) via sigla → UF |
-| **Modo mock** | API sem `DATAJUD_API_KEY`; dados determinísticos a partir do CNJ |
-| **Modo real** | API com chave DataJud; sincronização consulta o CNJ quando possível |
-| **Seed de demo** | Script `juris-sync/scripts/seed_demo.py` que popula 116 processos em 27 UFs |
-| **TanStack Query** | Camada de cache e invalidação após mutations (ex.: sync) |
+| Termo                       | Definição                                                                          |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| **Dashboard / Visão Geral** | Rota `/` com KPIs, mapa do Brasil, gráficos e filtros cruzados                     |
+| **Cross-filter**            | Seleção em um gráfico (UF ou assunto) que recalcula os demais componentes          |
+| **UF**                      | Unidade federativa; no mapa, agregação de tribunais estaduais (TJ*) via sigla → UF |
+| **Modo mock**               | API sem `DATAJUD_API_KEY`; dados determinísticos a partir do CNJ                   |
+| **Modo real**               | API com chave DataJud; sincronização consulta o CNJ quando possível                |
+| **Seed de demo**            | Script `juris-sync/scripts/seed_demo.py` que popula 116 processos em 27 UFs        |
+| **TanStack Query**          | Camada de cache e invalidação após mutations (ex.: sync)                           |
 
 ---
 
 ## 3. Atores e integrações
 
-| Ator | Interação |
-|------|-----------|
-| **Visitante / avaliador** | Navega no dashboard local (`localhost:3000`) |
-| **API JurisSync** | Fonte única de dados via REST (`NEXT_PUBLIC_JURISSYNC_API_URL`) |
-| **DataJud (indireto)** | Acessado apenas pela API; o frontend não chama o CNJ |
+| Ator                      | Interação                                                       |
+| ------------------------- | --------------------------------------------------------------- |
+| **Visitante / avaliador** | Navega no dashboard local (`localhost:3000`)                    |
+| **API JurisSync**         | Fonte única de dados via REST (`NEXT_PUBLIC_JURISSYNC_API_URL`) |
+| **DataJud (indireto)**    | Acessado apenas pela API; o frontend não chama o CNJ            |
 
 ```mermaid
 flowchart LR
@@ -66,12 +67,12 @@ flowchart LR
 
 **Endpoints consumidos pelo frontend:**
 
-| Método | Caminho | Uso |
-|--------|---------|-----|
-| `GET` | `/health` | Status da API e modo DataJud |
-| `GET` | `/api/v1/processos/` | Lista paginada (tela Processos) |
-| `GET` | `/api/v1/processos/{id}` | Detalhe + movimentações |
-| `POST` | `/api/v1/processos/sync` | Sincronizar por CNJ |
+| Método | Caminho                  | Uso                             |
+| ------ | ------------------------ | ------------------------------- |
+| `GET`  | `/health`                | Status da API e modo DataJud    |
+| `GET`  | `/api/v1/processos/`     | Lista paginada (tela Processos) |
+| `GET`  | `/api/v1/processos/{id}` | Detalhe + movimentações         |
+| `POST` | `/api/v1/processos/sync` | Sincronizar por CNJ             |
 
 O dashboard carrega **todos os processos** (paginado, 100 por página) na Visão Geral via `useAllProcessos` e agrega jurimetria no cliente (`lib/jurimetria.ts`). Os endpoints `/stats/por-tribunal` e `/stats/por-assunto` existem na API, mas o frontend não os consome - a agregação é feita localmente para suportar cross-filter.
 
@@ -80,12 +81,15 @@ O dashboard carrega **todos os processos** (paginado, 100 por página) na Visão
 ## 4. Regras de interface e jurimetria
 
 ### RN-F01 - Dados dos gráficos vêm da API
+
 Nenhum gráfico usa dados estáticos embutidos no bundle. Tudo reflete processos persistidos após sync (mock ou real).
 
 ### RN-F02 - Agregação por UF só inclui TJ*
+
 Tribunais federais/trabalhistas (ex.: TRF, TRT) não entram no mapa choropleth; apenas siglas mapeadas em `TRIBUNAL_TO_UF`.
 
 ### RN-F03 - Cross-filter por dimensão
+
 - Filtro **UF** afeta gráficos de tribunal e assunto; o mapa mantém todas as UFs visíveis mas respeita filtro de assunto (se houver).
 - Filtro **assunto** afeta mapa e tribunal; o gráfico de assuntos mantém todos os assuntos visíveis mas respeita filtro de UF (se houver).
 - UF e assunto podem ser **combinados**.
@@ -93,7 +97,9 @@ Tribunais federais/trabalhistas (ex.: TRF, TRT) não entram no mapa choropleth; 
 > Código: `processosForUfChart`, `processosForAssuntoChart`, `filterProcessos` em `src/lib/jurimetria.ts`.
 
 ### RN-F04 - Limpar filtros
+
 Os filtros são limpos quando o usuário:
+
 - clica fora da área dos gráficos (listener em `document`);
 - clica no fundo vazio do mapa;
 - clica na área vazia do gráfico de assuntos;
@@ -101,15 +107,19 @@ Os filtros são limpos quando o usuário:
 - clica novamente na mesma UF ou no mesmo assunto (toggle).
 
 ### RN-F05 - Mapa interativo
+
 O mapa suporta zoom (+/−, roda do mouse), pan (arrastar com zoom > 100%), rótulos com sigla e total por estado, ranking lateral e seleção de UF por clique.
 
 ### RN-F06 - Header fixo
+
 Menu superior fixo com marca JurisSync, subtítulo de portfólio e navegação **Visão Geral** | **Processos**. Conteúdo principal tem offset (`pt-[7.25rem]`) para não ficar oculto.
 
 ### RN-F07 - Invalidação após sync
+
 Após `POST /sync` bem-sucedido, invalidar queries de processos, stats (legado) e health para refletir novos dados.
 
 ### RN-F08 - Mensagens de erro em PT-BR
+
 Falhas de rede e HTTP são traduzidas em `lib/api/client.ts` e `lib/errors.ts`.
 
 ---
@@ -123,6 +133,7 @@ Falhas de rede e HTTP são traduzidas em `lib/api/client.ts` e `lib/errors.ts`.
 **Para** saber se o ambiente está saudável e qual fonte de dados está ativa
 
 **Critérios de aceite:**
+
 - Card com total de processos (filtrado ou total da base)
 - Card com UFs no recorte atual
 - Badge de status (`healthy` / outros) e versão da API
@@ -139,6 +150,7 @@ Falhas de rede e HTTP são traduzidas em `lib/api/client.ts` e `lib/errors.ts`.
 **Para** entender concentração geográfica e temática dos processos
 
 **Critérios de aceite:**
+
 - Mapa do Brasil (choropleth) com totais por UF
 - Gráfico de barras por tribunal
 - Gráfico horizontal por assunto
@@ -155,6 +167,7 @@ Falhas de rede e HTTP são traduzidas em `lib/api/client.ts` e `lib/errors.ts`.
 **Para** explorar correlações sem sair da Visão Geral
 
 **Critérios de aceite:**
+
 - Clique em UF (mapa ou ranking) aplica filtro e destaca seleção
 - Clique em barra de assunto aplica filtro
 - Chips mostram filtros ativos; botão limpar remove todos
@@ -172,6 +185,7 @@ Falhas de rede e HTTP são traduzidas em `lib/api/client.ts` e `lib/errors.ts`.
 **Para** localizar processos na base
 
 **Critérios de aceite:**
+
 - Tabela com CNJ, tribunal, classe, assunto, grau, data
 - Filtros enviados como query params à API
 - Paginação `limit=20`
@@ -188,6 +202,7 @@ Falhas de rede e HTTP são traduzidas em `lib/api/client.ts` e `lib/errors.ts`.
 **Para** acompanhar andamentos
 
 **Critérios de aceite:**
+
 - Metadados do processo
 - Timeline por `data_hora` decrescente
 - 404 com mensagem e retorno à lista
@@ -203,6 +218,7 @@ Falhas de rede e HTTP são traduzidas em `lib/api/client.ts` e `lib/errors.ts`.
 **Para** popular a base (mock ou DataJud)
 
 **Critérios de aceite:**
+
 - Validação Zod do formato CNJ antes do submit
 - Grau 1, 2 ou 3
 - Sucesso redireciona para `/processos/{id}`
@@ -257,10 +273,10 @@ E ao voltar à Visão Geral os totais incluem o novo processo
 
 ## 7. Regras de validação (cliente)
 
-| Campo | Regra | Arquivo |
-|-------|--------|---------|
+| Campo        | Regra                                                      | Arquivo                 |
+| ------------ | ---------------------------------------------------------- | ----------------------- |
 | `numero_cnj` | `^[0-9]{7}-[0-9]{2}\.[0-9]{4}\.[0-9]\.[0-9]{2}\.[0-9]{4}$` | `lib/validators/cnj.ts` |
-| `grau` | Inteiro 1, 2 ou 3 | `SyncForm.tsx` (Zod) |
+| `grau`       | Inteiro 1, 2 ou 3                                          | `SyncForm.tsx` (Zod)    |
 
 Alinhado ao schema Pydantic da API (`juris-sync/app/schemas/process.py`).
 
@@ -268,30 +284,43 @@ Alinhado ao schema Pydantic da API (`juris-sync/app/schemas/process.py`).
 
 ## 8. Requisitos não funcionais
 
-| ID | Requisito |
-|----|-----------|
-| RNF01 | TypeScript strict; `npm run typecheck` sem erros |
-| RNF02 | ESLint via `npm run lint` |
-| RNF03 | Testes unitários Vitest (`npm run test`) |
-| RNF04 | CI GitHub Actions: lint, typecheck, test, build |
-| RNF05 | Responsivo: mapa e gráficos em grid adaptável |
+| ID    | Requisito                                                              |
+| ----- | ---------------------------------------------------------------------- |
+| RNF01 | TypeScript strict; `npm run typecheck` sem erros                       |
+| RNF02 | ESLint via `npm run lint`                                              |
+| RNF03 | Testes unitários Vitest (`npm run test`)                               |
+| RNF04 | CI GitHub Actions: lint, typecheck, test, build                        |
+| RNF05 | Responsivo: mapa e gráficos em grid adaptável                          |
 | RNF06 | Acessibilidade básica: `aria-label` no mapa, `aria-pressed` no ranking |
-| RNF07 | CORS: API com `BACKEND_CORS_ORIGINS=*` em dev |
+| RNF07 | CORS: API com `BACKEND_CORS_ORIGINS=*` em dev                          |
 
 ---
 
 ## 9. Rastreabilidade requisito → código → teste
 
-| Requisito | Componente / módulo | Endpoint / dado | Teste automatizado |
-|-----------|----------------------|-----------------|-------------------|
-| HU01 | `DashboardView`, `useHealth` | `GET /health` | manual |
-| HU02 | `BrazilMapChart`, `TribunalChart`, `AssuntoChart` | `GET /processos` (all) | `tribunal-uf.test.ts` |
-| HU03 | `DashboardView`, `jurimetria.ts` | agregação cliente | manual (recomendado: `jurimetria.test.ts`) |
-| HU04 | `ProcessosView` | `GET /processos/` | manual |
-| HU05 | `ProcessoDetailView` | `GET /processos/{id}` | manual |
-| HU06 | `SyncForm` | `POST /processos/sync` | `cnj.test.ts`, `SyncForm.test.tsx` |
-| Erros HTTP | `lib/api/client.ts` | todos | `client.test.ts` |
-| RN-F06 | `AppHeader`, `layout.tsx` | - | manual |
+| Requisito  | Componente / módulo                               | Endpoint / dado        | Teste automatizado                         |
+| ---------- | ------------------------------------------------- | ---------------------- | ------------------------------------------ |
+| HU01       | `DashboardView`, `useHealth`                      | `GET /health`          | manual                                     |
+| HU02       | `BrazilMapChart`, `TribunalChart`, `AssuntoChart` | `GET /processos` (all) | `tribunal-uf.test.ts`                      |
+| HU03       | `DashboardView`, `jurimetria.ts`                  | agregação cliente      | manual (recomendado: `jurimetria.test.ts`) |
+| HU04       | `ProcessosView`                                   | `GET /processos/`      | manual                                     |
+| HU05       | `ProcessoDetailView`                              | `GET /processos/{id}`  | manual                                     |
+| HU06       | `SyncForm`                                        | `POST /processos/sync` | `cnj.test.ts`, `SyncForm.test.tsx`         |
+| Erros HTTP | `lib/api/client.ts`                               | todos                  | `client.test.ts`                           |
+| RN-F06     | `AppHeader`, `layout.tsx`                         | -                      | manual                                     |
+
+---
+
+## 10. Metodologia de desenvolvimento
+
+Este dashboard utilizou **ferramentas de IA generativa** sob a metodologia de **Especificação Direcionada (SDD)**:
+
+1. **Especificação** - requisitos de interface, regras de jurimetria (RN-F*) e cenários BDD definidos em paralelo ao código (este documento e [guia do testador](guia-do-testador.md)).
+2. **Geração assistida** - componentes React, layout e documentação acelerados com IA generativa.
+3. **Revisão humana** - todo código passou por **code review manual** e revisão automatizada em PRs (Cursor Bugbot, regras em `.cursor/BUGBOT.md`): contrato HTTP com a API, filtros cruzados e validação CNJ validados por lint, typecheck e testes Vitest no CI.
+4. **Rastreabilidade** - a matriz da seção 9 liga requisito → componente → teste.
+
+A IA acelerou a produção; a **coerência com a API** e a experiência de demo são responsabilidade da revisão humana e do guia do testador.
 
 ---
 

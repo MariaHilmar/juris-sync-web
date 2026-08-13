@@ -84,7 +84,9 @@ export function ProcessosView() {
                   type="button"
                   variant="secondary"
                   disabled={!canGoBack}
-                  onClick={() => setOffset((current) => Math.max(0, current - PAGE_SIZE))}
+                  onClick={() =>
+                    setOffset((current) => Math.max(0, current - PAGE_SIZE))
+                  }
                 >
                   Anterior
                 </Button>

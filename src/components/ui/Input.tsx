@@ -5,13 +5,22 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
 };
 
-export function Input({ className = "", label, error, id, ...props }: InputProps) {
+export function Input({
+  className = "",
+  label,
+  error,
+  id,
+  ...props
+}: InputProps) {
   const inputId = id ?? props.name;
 
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-[var(--foreground)]">
+        <label
+          htmlFor={inputId}
+          className="text-sm font-medium text-[var(--foreground)]"
+        >
           {label}
         </label>
       )}
