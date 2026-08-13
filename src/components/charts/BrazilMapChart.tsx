@@ -109,6 +109,7 @@ export function BrazilMapChart({
   const [hovered, setHovered] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -205,6 +206,7 @@ export function BrazilMapChart({
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
     didDragRef.current = false;
+    setIsDragging(true);
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -239,6 +241,7 @@ export function BrazilMapChart({
       return;
     }
     dragRef.current = null;
+    setIsDragging(false);
   };
 
   const handleUfClick = (uf: string) => {
@@ -337,7 +340,7 @@ export function BrazilMapChart({
               style={{
                 transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                 transformOrigin: "center center",
-                transition: dragRef.current
+                transition: isDragging
                   ? "none"
                   : "transform 120ms ease-out",
                 background: MAP_BG,
