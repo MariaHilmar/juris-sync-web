@@ -340,9 +340,7 @@ export function BrazilMapChart({
               style={{
                 transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                 transformOrigin: "center center",
-                transition: isDragging
-                  ? "none"
-                  : "transform 120ms ease-out",
+                transition: isDragging ? "none" : "transform 120ms ease-out",
                 background: MAP_BG,
               }}
               onClick={handleBackgroundClick}
