@@ -171,21 +171,6 @@ GitHub Actions em cada push/PR: `lint` → `format:check` → `typecheck` → `t
 - **Cursor Bugbot** em PRs com regras de UI/API em [`.cursor/BUGBOT.md`](.cursor/BUGBOT.md) (filtros cruzados, contrato HTTP, validação CNJ)
 - Ative o Bugbot no [dashboard do Cursor](https://cursor.com/dashboard) para o repositório `MariaHilmar/juris-sync-web`
 
----
-
-## Metodologia
-
-Este dashboard foi desenvolvido com **ferramentas de IA generativa** sob a metodologia de **Especificação Direcionada (SDD)**: requisitos de interface, regras de jurimetria e cenários BDD estão em `docs/requisitos.md`, escritos em paralelo ao código. O código passou por **revisão humana** (code review, lint, typecheck e testes Vitest no CI). A IA acelerou componentes e layout; a coerência com o contrato da API e os filtros cruzados é validada por testes e pelo [guia do testador](docs/guia-do-testador.md).
-
----
-
-## Repositórios relacionados
-
-- **API:** https://github.com/MariaHilmar/juris-sync
-- **Dashboard (este repo):** https://github.com/MariaHilmar/juris-sync-web
-- **Portfólio (vitrine Astro):** repositório `maria-portfolio` no workspace local
-
----
 
 ## Licença
 
